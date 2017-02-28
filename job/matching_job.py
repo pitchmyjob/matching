@@ -10,7 +10,7 @@ class Matching(object):
     filter = []
     must = []
     should = []
-    minimum_should_match = 2
+    minimum_should_match = 0
     results = []
     query = {}
     es = None
