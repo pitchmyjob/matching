@@ -10,7 +10,7 @@ class Matching(object):
     filter = []
     must = []
     should = []
-    minimum_should_match = 0
+    minimum_should_match = 2
     results = []
     query = {}
     es = None
@@ -78,7 +78,7 @@ class Matching(object):
 
 
     def get_from(self):
-        if self.page == 1:
+        if self.page <= 1:
             return 0
         return (self.page - 1) * self.size
 
@@ -132,9 +132,10 @@ class Matching(object):
 
 
     def filter_location(self):
-        if "locality" in self.data['location']:
-            request = {"match" : { "location.locality" : self.data['location']['locality'] }}
-            self.filter.append(request)
+        if "location"  in self.data:
+            if "locality" in self.data['location']:
+                request = {"match" : { "location.locality" : self.data['location']['locality'] }}
+                self.filter.append(request)
 
 
     def filter_contract(self):
