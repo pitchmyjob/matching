@@ -57,7 +57,7 @@ class Matching(object):
         if self.scroll:
             response = {
                 'results': self.results['hits']['hits'],
-                'scroll': self.results['_scroll_id'] if len(self.results['hits']['hits']) > self.scroll_size else None,
+                'scroll': self.results['_scroll_id'] if len(self.results['hits']['hits']) >= self.scroll_size else None,
                 'max_score': self.results['hits']['max_score']
             }
         else:
