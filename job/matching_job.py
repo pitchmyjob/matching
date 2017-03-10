@@ -96,9 +96,24 @@ class Matching(object):
                     scroll="2m",
                     size=self.scroll_size,
                     body=self.query,
-                    filter_path=['hits.hits._id', 'hits.hits._score', 'hits.max_score', '_scroll_id'] )
+                    filter_path=['hits.hits._id', 'hits.hits._score', 'hits.max_score', '_scroll_id'])
         else:
-            self.results = self.es.search(index='matching', doc_type='applicant', size=self.size, from_ =self.get_from(), body=self.query)
+            self.results = self.es.search(
+                index='matching',
+                doc_type='applicant',
+                size=self.size,
+                from_ =self.get_from(),
+                body=self.query,
+                filter_path=[
+                    'hits.total',
+                    'hits.hits._score',
+                    'hits.max_score',
+                    'hits.hits._id',
+                    'hits.hits._source.first_name',
+                    'hits.hits._source.last_name',
+                    'hits.hits._source.title',
+                    'hits.hits._source.location',
+                ])
 
 
     def create_query(self):

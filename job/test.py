@@ -8,7 +8,7 @@ os.environ["URL_ES"] = "https://search-matching-dev-qpd5t33mknnt2p6njeyah4kvku.e
 
 def page_test():
 
-    payload = {"job" : 160, "page" : 1, "search" : "Mathieu"}
+    payload = {"job" : 160, "page" : 1, "search": "mathieu"}
 
     ok = lambda_handler(payload, None)
 
