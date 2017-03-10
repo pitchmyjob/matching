@@ -21,12 +21,13 @@ class Matching(object):
     scroll_id = None
     scroll_size = 1000
 
-    def __init__(self, job, size, page, scroll, scroll_id):
+    def __init__(self, job, size, page, search, scroll, scroll_id):
         if size:
             self.size = size
         if page:
             self.page = page
 
+        self.search = search
         self.scroll = scroll
         self.scroll_id = scroll_id
 
@@ -55,9 +56,10 @@ class Matching(object):
 
     def return_response(self):
         if self.scroll:
+            hits = self.results['hits']['hits'] if "hits" in self.results['hits'] else []
             response = {
-                'results': self.results['hits']['hits'],
-                'scroll': self.results['_scroll_id'] if len(self.results['hits']['hits']) >= self.scroll_size else None,
+                'results': hits,
+                'scroll': self.results['_scroll_id'] if len(hits) >= self.scroll_size else None,
                 'max_score': self.results['hits']['max_score']
             }
         else:
@@ -86,7 +88,7 @@ class Matching(object):
     def execute_query(self):
         if self.scroll :
             if self.scroll_id:
-                self.results = self.es.scroll(scroll="2m", scroll_id=self.scroll_id)
+                self.results = self.es.scroll(scroll="2m", scroll_id=self.scroll_id, filter_path=['hits.hits._id', 'hits.hits._score', 'hits.max_score', '_scroll_id'])
             else:
                 self.results = self.es.search(
                     index='matching',
@@ -115,6 +117,7 @@ class Matching(object):
     def create_request(self):
         self.filter_location()
         self.filter_contract()
+        self.filter_search()
         self.should_title()
         self.should_tags()
         self.calculate_minimum_should_match()
@@ -155,6 +158,16 @@ class Matching(object):
         })
 
 
+    def filter_search(self):
+        if self.search:
+            self.filter.append({
+                "match" : {
+                    "_all" : self.search
+                }
+            })
+
+
+
     def should_tags(self):
         for tag in self.data['tags']:
             self.should.append( {"match_phrase": {"wanted_skills": tag}} )
@@ -165,11 +178,12 @@ class Matching(object):
 def lambda_handler(event, context):
     if "job" in event:
         job = event['job']
+        search = event['search'] if "search" in event else None
         size = event['size'] if "size" in event else None
         page = event['page'] if "page" in event else None
         scroll = event['scroll'] if "scroll" in event else None
         scroll_id = event['scroll_id'] if "scroll_id" in event else None
-        matching = Matching(job, size, page, scroll, scroll_id)
+        matching = Matching(job, size, page, search, scroll, scroll_id)
         return matching.return_response()
     else:
         return "error"

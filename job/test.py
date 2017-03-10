@@ -1,4 +1,5 @@
 import os
+import json
 from matching_job import lambda_handler
 
 
@@ -6,8 +7,9 @@ os.environ["URL_ES"] = "https://search-matching-dev-qpd5t33mknnt2p6njeyah4kvku.e
 
 
 def page_test():
-    #payload = {"job" : 140, "page" : 1, "size" : 20}
-    payload = {"job" : 147, "scroll": True }
+
+    payload = {"job" : 160, "page" : 1, "search" : "Mathieu"}
+
     ok = lambda_handler(payload, None)
 
     print(ok)
@@ -15,15 +17,17 @@ def page_test():
 
 
 def scroll_test():
-    payload = {"job" : 140, "scroll" : True}
+    payload = {"job" : 150, "scroll" : True}
 
     ok = lambda_handler(payload, None)
 
     res = []
     max = ok['max_score']
 
-    print(len(ok['results']))
-    print(ok)
+
+    res = res + ok['results']
+
+    print(len(res))
 
 
     while len(ok['results']) > 0 and 1 == 2 :
@@ -42,5 +46,7 @@ def scroll_test():
 
 
 
-#scroll_test()
+
 page_test()
+
+#scroll_test()
