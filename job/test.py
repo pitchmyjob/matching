@@ -17,7 +17,7 @@ def page_test():
 
 
 def scroll_test():
-    payload = {"job" : 150, "scroll" : True}
+    payload = {"job" : 147, "scroll" : True}
 
     ok = lambda_handler(payload, None)
 
@@ -27,7 +27,7 @@ def scroll_test():
 
     res = res + ok['results']
 
-    print(len(res))
+    print(ok)
 
 
     while len(ok['results']) > 0 and 1 == 2 :
@@ -47,6 +47,6 @@ def scroll_test():
 
 
 
-page_test()
+#page_test()
 
-#scroll_test()
+scroll_test()

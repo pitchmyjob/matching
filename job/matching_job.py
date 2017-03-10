@@ -19,7 +19,7 @@ class Matching(object):
     page = 1
     scroll = None
     scroll_id = None
-    scroll_size = 1000
+    scroll_size = 2000
 
     def __init__(self, job, size, page, search, scroll, scroll_id):
         if size:
