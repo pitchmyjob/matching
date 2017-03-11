@@ -32,7 +32,7 @@ class Matching(object):
         self.scroll_id = scroll_id
 
         self.es = Elasticsearch(
-            [os.environ["URL_ES"]],
+            [os.environ["NAME_ES_DOMAIN"]],
             use_ssl=True,
             verify_certs=True,
             connection_class=RequestsHttpConnection
